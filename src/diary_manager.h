@@ -12,6 +12,10 @@ typedef struct {
 
 extern const char *DIARY_FILE;
 
-void addDiaryEntry(const char *entry);
+void addDiaryEntry();
+void viewDiary();
+void searchDiaryByDate();
+void deleteDiaryEntry();
+void updateDiaryEntry();
 
 #endif // DIARY_MANAGER_H

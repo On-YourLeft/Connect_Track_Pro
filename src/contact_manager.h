@@ -14,6 +14,6 @@ void addContact();
 void viewContacts();
 void searchContacts();
 void deleteContact();
-void updateContact();
+void updateContact();  
 
 #endif

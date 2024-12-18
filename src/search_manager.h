@@ -2,9 +2,9 @@
 #define SEARCH_MANAGER_H
 
 // Function declarations
-void searchContactByName(const char *name);
-void searchDiaryByDate(const char *date);
-void searchDiaryByKeyword(const char *keyword);
+void searchContactByName();
+void searchDiaryByDate();
+void searchDiaryByKeyword();
 void performSearch();
 
 #endif
