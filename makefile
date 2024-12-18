@@ -17,7 +17,7 @@ all: $(EXEC)
 
 # Create build directory if it doesn't exist
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+	mkdir $(BUILD_DIR)
 
 # Rule to build the executable
 $(EXEC): $(BUILD_DIR) $(OBJ_FILES)
