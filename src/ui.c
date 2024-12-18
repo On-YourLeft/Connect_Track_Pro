@@ -1,38 +1,66 @@
-#include <gtk/gtk.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "ui.h"
+#include "contact_manager.h"
+#include "diary_manager.h"
+#include "utils.h"
+#include "notifications.h"
 
-// Function to load CSS
-void load_css() {
-    GtkCssProvider *provider = gtk_css_provider_new();
-    GdkDisplay *display = gdk_display_get_default();
+void login() 
+{
+    char username[20], password[20];
+    char correctUsername[] = "admin";
+    char correctPassword[] = "password";
 
-    gtk_css_provider_load_from_path(provider, "assets/style.css");
-    gtk_style_context_add_provider_for_display(
-        display,
-        GTK_STYLE_PROVIDER(provider),
-        GTK_STYLE_PROVIDER_PRIORITY_USER
-    );
+    printf("Welcome to Connect Track Pro\n");
+    printf("Please Login\n");
+
+    while (1) {
+        printf("Username: ");
+        scanf("%s", username);
+        printf("Password: ");
+        scanf("%s", password);
+
+        if (strcmp(username, correctUsername) == 0 && strcmp(password, correctPassword) == 0) {
+            printf("Login Successful!\n");
+            checkNotifications();  // Check for notifications
+            mainMenu();
+            break;
+        } else {
+            printf("Incorrect Username or Password. Try again.\n");
+        }
+    }
 }
 
-// Function to create the main window
-void create_main_window(GtkApplication *app, gpointer user_data) {
-    (void)user_data; // Mark 'user_data' as unused
+void mainMenu() {
+    int choice;
 
-    GtkWidget *window;
-    GtkWidget *grid;
-    GtkWidget *button;
+    while (1) {
+        printf("\n=== Main Menu ===\n");
+        printf("1. Manage Contacts\n");
+        printf("2. Manage Diary\n");
+        printf("3. View Calendar\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
 
-    window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Connect Track Pro");
-    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+        switch (choice) {
+            case 1: contactMenu(); break;
+            case 2: diaryMenu(); break;
+            case 3: calendarView(); break;
+            case 4: printf("Goodbye!\n"); exit(0);
+            default: printf("Invalid Choice!\n");
+        }
+    }
+}
 
-    // Load CSS
-    load_css();
+void contactMenu()
+{
 
-    grid = gtk_grid_new();
-    gtk_window_set_child(GTK_WINDOW(window), grid);
+}
 
-    button = gtk_button_new_with_label("Click Me");
-    gtk_grid_attach(GTK_GRID(grid), button, 0, 0, 1, 1);
-
-    gtk_widget_set_visible(window, TRUE);
+void diaryMenu()
+{
+    
 }

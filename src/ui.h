@@ -1,9 +1,10 @@
 #ifndef UI_H
 #define UI_H
 
-#include <gtk/gtk.h>
-
-// Function prototypes
-void create_main_window(GtkApplication *app, gpointer user_data);
+void login();
+void mainMenu();
+void contactMenu();
+void diaryMenu();
+void calendarView();
 
 #endif
