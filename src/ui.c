@@ -4,8 +4,9 @@
 #include "ui.h"
 #include "contact_manager.h"
 #include "diary_manager.h"
-#include "utils.h"
+#include "utility.h"
 #include "notifications.h"
+#include "search_manager.h"
 
 void login() 
 {
@@ -24,7 +25,6 @@ void login()
 
         if (strcmp(username, correctUsername) == 0 && strcmp(password, correctPassword) == 0) {
             printf("Login Successful!\n");
-            checkNotifications();  // Check for notifications
             mainMenu();
             break;
         } else {
@@ -34,6 +34,9 @@ void login()
 }
 
 void mainMenu() {
+
+    checkNotifications(); 
+    
     int choice;
 
     while (1) {
@@ -41,7 +44,8 @@ void mainMenu() {
         printf("1. Manage Contacts\n");
         printf("2. Manage Diary\n");
         printf("3. View Calendar\n");
-        printf("4. Exit\n");
+        printf("4. Perform Search\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -49,7 +53,8 @@ void mainMenu() {
             case 1: contactMenu(); break;
             case 2: diaryMenu(); break;
             case 3: calendarView(); break;
-            case 4: printf("Goodbye!\n"); exit(0);
+            case 4: performSearch(); break;
+            case 5: printf("Goodbye!\n"); exit(0);
             default: printf("Invalid Choice!\n");
         }
     }
@@ -63,10 +68,9 @@ void contactMenu()
         printf("\n===== Contacts Menu =====\n");
         printf("1. Add contact.\n");
         printf("2. View contacts.\n");
-        printf("3. Search contact.\n");
-        printf("4. Delete contact.\n");
-        printf("5. Update Contact.\n");
-        printf("6. Back to main menu.\n");
+        printf("3. Delete contact.\n");
+        printf("4. Update Contact.\n");
+        printf("5. Back to main menu.\n");
         printf("Enter your choice: ");
         scanf(" %d",&choice);
 
@@ -74,10 +78,9 @@ void contactMenu()
         {
             case 1: addContact(); break;
             case 2: viewContacts(); break;
-            case 3: searchContacts(); break;
-            case 4: deleteContact(); break;
-            case 5: updateContact(); break;
-            case 6: mainMenu(); break;
+            case 3: deleteContact(); break;
+            case 4: updateContact(); break;
+            case 5: mainMenu(); break;
         }
     }
 }
@@ -87,13 +90,12 @@ void diaryMenu()
     int choice;
     while (1)
     {
-        printf("\n===== Contacts Menu =====\n");
+        printf("\n===== Diary Menu =====\n");
         printf("1. Add diary entry.\n");
         printf("2. View diary entries.\n");
-        printf("3. Search diary entry by date.\n");
-        printf("4. Delete diary entry.\n");
-        printf("5. Update diary entry.\n");
-        printf("6. Back to main menu.\n");
+        printf("3. Delete diary entry.\n");
+        printf("4. Update diary entry.\n");
+        printf("5. Back to main menu.\n");
         printf("Enter your choice: ");
         scanf(" %d",&choice);
 
@@ -101,10 +103,9 @@ void diaryMenu()
         {
             case 1: addDiaryEntry(); break;
             case 2: viewDiary(); break;
-            case 3: searchDiaryByDate(); break;
-            case 4: deleteDiaryEntry(); break;
-            case 5: updateDiaryEntry(); break;
-            case 6: mainMenu(); break;
+            case 3: deleteDiaryEntry(); break;
+            case 4: updateDiaryEntry(); break;
+            case 5: mainMenu(); break;
         }
     }
 }

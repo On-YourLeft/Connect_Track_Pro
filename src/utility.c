@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include "utils.h"
+#include "utility.h"
 #include "diary_manager.h"
 
 void calendarView() {
@@ -15,6 +15,11 @@ void calendarView() {
     printf("Enter Year: ");
     scanf("%d", &year);
 
+    if (month < 1 || month > 12) {
+        printf("Invalid month. Please enter a value between 1 and 12.\n");
+        return;
+    }
+
     // Check the diary file for entries in the given month/year
     if (file) {
         char targetDate[20];
@@ -24,10 +29,14 @@ void calendarView() {
             if (strstr(d.date, targetDate)) { 
                 int entryDay;
                 sscanf(d.date, "%02d", &entryDay);
-                markedDays[entryDay] = 1; // Mark the day
+                if (entryDay >= 1 && entryDay <= 31) {
+                    markedDays[entryDay] = 1; // Mark the day
+                }
             }
         }
         fclose(file);
+    } else {
+        printf("No diary file found. Calendar will be shown without highlights.\n");
     }
 
     // Get the start day of the month (Zeller's Congruence)
@@ -64,5 +73,7 @@ void calendarView() {
             printf("\n"); // New week
         }
     }
-    printf("\n");
+    if ((day + startDay - 1) % 7 != 0) {
+        printf("\n"); // Final newline
+    }
 }

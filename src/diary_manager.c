@@ -116,7 +116,21 @@ void viewDiary() {
 }*/
 
 
-void deleteDiaryEntry(const char *date) {
+void deleteDiaryEntry() {
+    char date[20] = {0};
+
+    fflush(stdin);
+
+    // Prompt user for date
+    printf("Enter Date (DD-MM-YYYY) to delete entries: ");
+    if (fgets(date, sizeof(date), stdin)) {
+        date[strcspn(date, "\n")] = '\0'; // Remove newline
+        printf("Received input for deletion: '%s'\n", date); // Debugging output
+    } else {
+        printf("Error reading input.\n");
+        return;
+    }
+
     FILE *file = fopen(DIARY_FILE, "rb");
     if (!file) {
         perror("Error opening diary file");
@@ -131,40 +145,82 @@ void deleteDiaryEntry(const char *date) {
     }
 
     DiaryEntry d;
-    int found = 0;
+    int found = 0, entryNumber = 0, deleteChoice = 0;
 
-    while (fread(&d, sizeof(DiaryEntry), 1, file) == 1) {
+    printf("\nMatching Entries:\n");
+    printf("=====================================\n");
+
+    // First pass: Display all matching entries with a number
+    while (fread(&d, sizeof(DiaryEntry), 1, file)) {
         if (strcmp(d.date, date) == 0) {
             found = 1;
-            printf("Deleted Diary Entry for Date: %s\n", d.date);
-        } else {
-            if (fwrite(&d, sizeof(DiaryEntry), 1, tempFile) != 1) {
-                perror("Error writing to temporary file");
-                fclose(file);
-                fclose(tempFile);
-                return;
-            }
+            entryNumber++;
+            printf("Entry #%d:\n", entryNumber);
+            printf("Date: %s\n", d.date);
+            printf("Note: %s\n", d.note);
+            printf("-------------------------------------\n");
         }
     }
 
     if (!found) {
-        printf("No diary entry found for the date '%s'.\n", date);
+        printf("No diary entries found for the date '%s'.\n", date);
+        fclose(file);
+        fclose(tempFile);
+        remove("temp.dat");
+        return;
+    }
+
+    // Ask the user which entry to delete
+    printf("Enter the entry number to delete (or 0 to cancel): ");
+    if (scanf("%d", &deleteChoice) != 1 || deleteChoice < 0 || deleteChoice > entryNumber) {
+        printf("Invalid choice. Operation canceled.\n");
+        fclose(file);
+        fclose(tempFile);
+        remove("temp.dat");
+        return;
+    }
+
+    rewind(file); // Rewind file to start for second pass
+    entryNumber = 0;
+
+    // Second pass: Write non-deleted entries to the temp file
+    while (fread(&d, sizeof(DiaryEntry), 1, file)) {
+        if (strcmp(d.date, date) == 0) {
+            entryNumber++;
+            if (entryNumber == deleteChoice) {
+                printf("Deleted Diary Entry #%d for Date: %s\n", entryNumber, d.date);
+                continue; // Skip writing this entry
+            }
+        }
+        fwrite(&d, sizeof(DiaryEntry), 1, tempFile);
     }
 
     fclose(file);
     fclose(tempFile);
 
-    if (found) {
-        if (remove(DIARY_FILE) != 0 || rename("temp.dat", DIARY_FILE) != 0) {
-            perror("Error updating diary file");
-        }
+    if (remove(DIARY_FILE) != 0 || rename("temp.dat", DIARY_FILE) != 0) {
+        perror("Error updating diary file");
     } else {
-        remove("temp.dat");
+        printf("Diary entry deleted successfully.\n");
     }
 }
 
 
-void updateDiaryEntry(const char *date) {
+void updateDiaryEntry() {
+    char date[20] = {0};
+
+    fflush(stdin);
+
+    // Prompt user for date
+    printf("Enter Date (DD-MM-YYYY): ");
+    if (fgets(date, sizeof(date), stdin)) {
+        date[strcspn(date, "\n")] = '\0'; // Remove newline
+        printf("Received input for update: '%s'\n", date); // Debugging output
+    } else {
+        printf("Error reading input.\n");
+        return;
+    }
+
     FILE *file = fopen(DIARY_FILE, "rb+");
     if (!file) {
         perror("Error opening diary file");
@@ -172,38 +228,66 @@ void updateDiaryEntry(const char *date) {
     }
 
     DiaryEntry d;
-    int found = 0;
+    int found = 0, entryNumber = 0, updateChoice = 0;
+    long positions[100] = {0}; // Array to store positions of matching entries
 
-    while (fread(&d, sizeof(DiaryEntry), 1, file) == 1) {
+    printf("\nMatching Entries:\n");
+    printf("=====================================\n");
+
+    // First pass: Display all matching entries with a number
+    while (fread(&d, sizeof(DiaryEntry), 1, file)) {
         if (strcmp(d.date, date) == 0) {
             found = 1;
-
-            printf("Updating Diary Entry for Date: %s\n", d.date);
-
-            printf("Enter New Note: ");
-            if (fgets(d.note, sizeof(d.note), stdin) == NULL) {
-                printf("Error reading note input.\n");
-                fclose(file);
-                return;
-            }
-            d.note[strcspn(d.note, "\n")] = '\0'; // Remove newline
-
-            fseek(file, -sizeof(DiaryEntry), SEEK_CUR);
-            if (fwrite(&d, sizeof(DiaryEntry), 1, file) != 1) {
-                perror("Error updating diary entry");
-            } else {
-                printf("Diary Entry Updated Successfully!\n");
-            }
-            break;
+            positions[entryNumber] = ftell(file) - sizeof(DiaryEntry); // Store position
+            entryNumber++;
+            printf("Entry #%d:\n", entryNumber);
+            printf("Date: %s\n", d.date);
+            printf("Note: %s\n", d.note);
+            printf("-------------------------------------\n");
         }
     }
 
     if (!found) {
-        printf("No diary entry found for the date '%s'.\n", date);
+        printf("No diary entries found for the given date.\n");
+        fclose(file);
+        return;
     }
 
-    if (ferror(file)) {
-        perror("Error reading/writing to diary file");
+    // Ask user to select the entry to update
+    printf("Select the entry number to update (1-%d): ", entryNumber);
+    if (scanf("%d", &updateChoice) != 1 || updateChoice < 1 || updateChoice > entryNumber) {
+        printf("Invalid choice.\n");
+        fclose(file);
+        return;
+    }
+    getchar(); // Clear newline left in buffer
+
+    // Seek to the selected entry
+    fseek(file, positions[updateChoice - 1], SEEK_SET);
+    if (fread(&d, sizeof(DiaryEntry), 1, file) != 1) {
+        perror("Error reading selected entry.");
+        fclose(file);
+        return;
+    }
+
+    // Update the selected entry
+    printf("Updating Entry #%d:\n", updateChoice);
+    printf("Current Note: %s\n", d.note);
+    printf("Enter New Note: ");
+    if (fgets(d.note, sizeof(d.note), stdin)) {
+        d.note[strcspn(d.note, "\n")] = '\0'; // Remove newline
+    } else {
+        printf("Error reading input for note.\n");
+        fclose(file);
+        return;
+    }
+
+    // Write the updated entry back to the file
+    fseek(file, positions[updateChoice - 1], SEEK_SET);
+    if (fwrite(&d, sizeof(DiaryEntry), 1, file) != 1) {
+        perror("Error updating diary entry.");
+    } else {
+        printf("Diary Entry Updated Successfully!\n");
     }
 
     fclose(file);
