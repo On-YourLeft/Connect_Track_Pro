@@ -4,7 +4,8 @@
 #include "notifications.h"
 #include "diary_manager.h"
 
-void checkNotifications(void) {
+void checkNotifications(void) 
+{
     FILE *file = fopen(DIARY_FILE, "rb");
     DiaryEntry d;
     time_t t = time(NULL);
@@ -16,7 +17,6 @@ void checkNotifications(void) {
         return;
     }
 
-    // Get today's date as a string
     sprintf(currentDate, "%02d-%02d-%04d", today.tm_mday, today.tm_mon + 1, today.tm_year + 1900);
 
     printf("\n=== Notifications ===\n");

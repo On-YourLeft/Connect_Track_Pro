@@ -81,42 +81,8 @@ void viewDiary() {
 }
 
 
-
-/*void searchDiaryByDate(const char *date) {
-    FILE *file = fopen(DIARY_FILE, "rb");
-    if (!file) {
-        perror("Error opening diary file");
-        return;
-    }
-
-    DiaryEntry d;
-    int found = 0;
-
-    printf("\nSearching for Diary Entries on Date: %s\n", date);
-    printf("=====================================\n");
-
-    while (fread(&d, sizeof(DiaryEntry), 1, file) == 1) {
-        if (strcmp(d.date, date) == 0) {
-            printf("Date: %s\n", d.date);
-            printf("Note: %s\n", d.note);
-            printf("-------------------------------------\n");
-            found = 1;
-        }
-    }
-
-    if (!found) {
-        printf("No diary entries found for the given date.\n");
-    }
-
-    if (ferror(file)) {
-        perror("Error reading from diary file");
-    }
-
-    fclose(file);
-}*/
-
-
-void deleteDiaryEntry() {
+void deleteDiaryEntry() 
+{
     char date[20] = {0};
 
     fflush(stdin);

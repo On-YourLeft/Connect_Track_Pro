@@ -4,7 +4,7 @@
 #include "contact_manager.h"
 #include "diary_manager.h"
 
-// Search Contact by Name
+
 void searchContactByName(const char *name) {
     FILE *file = fopen(CONTACT_FILE, "rb");
     Contact c;

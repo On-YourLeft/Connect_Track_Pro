@@ -4,11 +4,13 @@
 
 const char *CONTACT_FILE = "contacts.dat";
 
-void addContact() {
+void addContact() 
+{
     FILE *file = fopen(CONTACT_FILE, "ab");
     Contact c;
 
-    if (!file) {
+    if (!file) 
+    {
         printf("Error opening file!\n");
         return;
     }
@@ -59,10 +61,13 @@ void deleteContact()
 
     // Prompt user for name
     printf("Enter name to delete: ");
-    if (fgets(nameToDelete, MAX_NAME_LEN, stdin)) {
+    if (fgets(nameToDelete, MAX_NAME_LEN, stdin)) 
+    {
         nameToDelete[strcspn(nameToDelete, "\n")] = '\0'; // Remove newline
         printf("Received input for deletion: '%s'\n", nameToDelete); // Debugging output
-    } else {
+    }
+    else 
+    {
         printf("Error reading input.\n");
         return;
     }
@@ -112,10 +117,6 @@ void deleteContact()
         remove("temp.dat");
     }
 }
-
-
-
-
 
 void updateContact() {
     char nameToUpdate[MAX_NAME_LEN] = {0};
