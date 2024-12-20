@@ -17,7 +17,8 @@ void searchContactByName(const char *name) {
 
     while (fread(&c, sizeof(Contact), 1, file)) {
         if (strcmp(c.name, name) == 0) {
-            printf("Contact Found:\n");
+            printf("\n");
+            printf("====== Contact Found ======\n");
             printf("Name: %s\nPhone: %s\nEmail: %s\nAddress: %s\n", c.name, c.phone, c.email, c.address);
             found = 1;
             break;

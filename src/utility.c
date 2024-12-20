@@ -4,11 +4,12 @@
 #include "utility.h"
 #include "diary_manager.h"
 
-void calendarView() {
+void calendarView() 
+{
     int year, month, day, daysInMonth, startDay, i;
     FILE *file = fopen(DIARY_FILE, "rb");
     DiaryEntry d;
-    int markedDays[32] = {0}; // Array to mark days with diary entries
+    int markedDays[32] = {0}; 
 
     printf("Enter Month (1-12): ");
     scanf("%d", &month);
