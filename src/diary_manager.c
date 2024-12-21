@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "diary_manager.h"
-#include "notifications.h" // Include the header file
+#include "notifications.h" 
 
-const char *DIARY_FILE = "diary.dat"; // Define DIARY_FILE here
+const char *DIARY_FILE = "diary.dat"; 
 
 void addDiaryEntry() {
-    FILE *file = fopen(DIARY_FILE, "ab"); // Open in append mode
+    FILE *file = fopen(DIARY_FILE, "ab"); 
     if (!file) {
         perror("Error opening diary file");
         return;
@@ -23,22 +23,19 @@ void addDiaryEntry() {
         fclose(file);
         return;
     }
-    d.date[strcspn(d.date, "\n")] = '\0'; // Remove newline character
+    d.date[strcspn(d.date, "\n")] = '\0';
 
-    // Clear the input buffer to ensure clean note entry
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF);
 
-    // Prompt for the note
     printf("Enter Note: ");
     if (fgets(d.note, sizeof(d.note), stdin) == NULL || d.note[0] == '\n') {
         printf("Invalid input for note.\n");
         fclose(file);
         return;
     }
-    d.note[strcspn(d.note, "\n")] = '\0'; // Remove newline character
-
-    // Write the entry to the file
+    d.note[strcspn(d.note, "\n")] = '\0';
+ 
     if (fwrite(&d, sizeof(DiaryEntry), 1, file) != 1) {
         perror("Error writing to diary file");
     } else {
@@ -48,20 +45,20 @@ void addDiaryEntry() {
     fclose(file);
 }
 
-void viewDiary() {
+void viewDiary() 
+{
     FILE *file = fopen(DIARY_FILE, "rb");
     if (!file) {
         perror("Error opening diary file");
         return;
     }
 
-    DiaryEntry d; // Struct to hold diary entry data
+    DiaryEntry d;
     int entryCount = 0;
 
     printf("\nDiary Entries:\n");
     printf("=====================================\n");
 
-    // Read and display all entries from the diary file
     while (fread(&d, sizeof(DiaryEntry), 1, file) == 1) {
         printf("Entry #%d:\n", ++entryCount);
         printf("Date: %s\n", d.date);
@@ -87,11 +84,10 @@ void deleteDiaryEntry()
 
     fflush(stdin);
 
-    // Prompt user for date
     printf("Enter Date (DD-MM-YYYY) to delete entries: ");
     if (fgets(date, sizeof(date), stdin)) {
-        date[strcspn(date, "\n")] = '\0'; // Remove newline
-        printf("Received input for deletion: '%s'\n", date); // Debugging output
+        date[strcspn(date, "\n")] = '\0'; 
+        printf("Received input for deletion: '%s'\n", date); 
     } else {
         printf("Error reading input.\n");
         return;
@@ -172,7 +168,8 @@ void deleteDiaryEntry()
 }
 
 
-void updateDiaryEntry() {
+void updateDiaryEntry() 
+{
     char date[20] = {0};
 
     fflush(stdin);
